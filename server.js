@@ -1,38 +1,26 @@
 import express from 'express';
 import cors from 'cors';
-import puppeteer from 'puppeteer-core';
-import chromium from 'chrome-aws-lambda';
+import puppeteer from 'puppeteer'; // <-- full puppeteer
 import { jsPDF } from 'jspdf';
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
-
-// Sanity check
-app.get('/', (req, res) => {
-  res.send('PDF API is running. POST /download-pdf with JSON { url: "https://example.com" }');
-});
 
 app.post('/download-pdf', async (req, res) => {
   try {
     const { url } = req.body;
     if (!url) throw new Error('No URL provided');
 
-    // Launch headless Chromium from chrome-aws-lambda
     const browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle0' });
 
-    // Take full-page screenshot
     const screenshot = await page.screenshot({ fullPage: true });
-
     const { width, height } = await page.evaluate(() => ({
       width: document.documentElement.scrollWidth,
       height: document.documentElement.scrollHeight
@@ -40,7 +28,6 @@ app.post('/download-pdf', async (req, res) => {
 
     await browser.close();
 
-    // Create PDF with jsPDF
     const pdf = new jsPDF({
       orientation: height > width ? 'portrait' : 'landscape',
       unit: 'px',
@@ -63,6 +50,4 @@ app.post('/download-pdf', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log(`✅ PDF API running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`✅ PDF API running on port ${PORT}`));
