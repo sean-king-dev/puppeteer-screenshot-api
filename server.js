@@ -6,7 +6,8 @@ import { jsPDF } from 'jspdf';
 
 const app = express();
 app.use(cors({
-    origin: 'https://dev.kingseducation.com'
+    // origin: 'https://dev.kingseducation.com'
+    origin: '*'
 }));
 app.use(express.json());
 
