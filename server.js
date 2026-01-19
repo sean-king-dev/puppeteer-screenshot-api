@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-// import puppeteer from 'puppeteer-core';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+// import puppeteer from 'puppeteer';
 import chromium from 'chrome-aws-lambda';
 import { jsPDF } from 'jspdf';
 
@@ -22,12 +22,12 @@ app.post('/download-pdf', async (req, res) => {
 
     // Launch headless Chromium from chrome-aws-lambda
     const browser = await puppeteer.launch({
-    //   args: chromium.args,
-    //   defaultViewport: chromium.defaultViewport,
-    //   executablePath: await chromium.executablePath,
-    //   headless: chromium.headless,
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
+    // headless: true,
+    // args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
     const page = await browser.newPage();
