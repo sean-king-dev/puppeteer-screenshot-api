@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import chromium from 'chrome-aws-lambda';
 import puppeteer from 'puppeteer'; // <-- full puppeteer
 import { jsPDF } from 'jspdf';
 
@@ -13,8 +14,10 @@ app.post('/download-pdf', async (req, res) => {
     if (!url) throw new Error('No URL provided');
 
     const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath(),
+    headless: chromium.headless,
     });
 
     const page = await browser.newPage();
