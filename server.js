@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import puppeteer from 'puppeteer-core';
-// import puppeteer from 'puppeteer';
 import chromium from 'chrome-aws-lambda';
 import { jsPDF } from 'jspdf';
 
@@ -10,7 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Optional: sanity check
+// Sanity check
 app.get('/', (req, res) => {
   res.send('PDF API is running. POST /download-pdf with JSON { url: "https://example.com" }');
 });
@@ -26,8 +25,6 @@ app.post('/download-pdf', async (req, res) => {
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath,
       headless: chromium.headless,
-    // headless: true,
-    // args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
     const page = await browser.newPage();
