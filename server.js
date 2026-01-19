@@ -5,7 +5,9 @@ import puppeteer from 'puppeteer'; // <-- full puppeteer
 import { jsPDF } from 'jspdf';
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'https://dev.kingseducation.com'
+}));
 app.use(express.json());
 
 app.post('/download-pdf', async (req, res) => {
